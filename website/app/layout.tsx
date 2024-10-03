@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/themeProvider";
 import Link  from "next/link";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/Buttons/ThemeToggle";
 
 export const metadata: Metadata = {
   title: "Attendify",
@@ -31,11 +32,12 @@ export default function RootLayout({
            enableSystem
            disableTransitionOnChange
         >
-          <nav className="flex justify-around items-center py-4 px-8">
+          <nav className="flex justify-between items-center py-4 px-20">
             <Link href="/"><p className="font-bold text-3xl">Attendify</p></Link>
-            <div className="flex justify-around items-center gap-4">
+            <div className="flex justify-around items-center gap-6">
               <Link href="/login"><Button className="text-lg" variant="link">Login</Button></Link>
               <Link href="/sign-up"><Button className="text-lg">Sign Up</Button></Link>
+              <ThemeToggle />
             </div>
           </nav>
           {children}
