@@ -17,41 +17,41 @@ const SignUp: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-center text-gray-800">Sign Up</h1>
+    <div className="flex items-center justify-center min-h-[80vh] bg-background">
+      <div className="w-full max-w-md p-8 space-y-6 bg-secondary rounded-lg shadow-md text-foreground">
+        <h1 className="text-2xl font-bold text-center">Sign Up</h1>
         <form onSubmit={handleSignUp} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-            <input 
+            <label htmlFor="email" className="block text-sm font-medium">Email</label>
+            <input  
               type="email" 
               id="email" 
               value={email} 
               onChange={(e) => setEmail(e.target.value)} 
               required 
-              className="w-full px-3 py-2 mt-1 text-sm border rounded-lg focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"
+              className="w-full px-3 py-2 mt-1 text-sm border rounded-lg focus:ring-indigo-500 focus:border-indigo-500 border-border"
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+            <label htmlFor="password" className="block text-sm font-medium">Password</label>
             <input 
               type="password" 
               id="password" 
               value={password} 
               onChange={(e) => setPassword(e.target.value)} 
               required 
-              className="w-full px-3 py-2 mt-1 text-sm border rounded-lg focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"
+              className="w-full px-3 py-2 mt-1 text-sm border rounded-lg focus:ring-indigo-500 focus:border-indigo-500 border-border"
             />
           </div>
           <div>
-            <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700">Confirm Password</label>
+            <label htmlFor="confirm-password" className="block text-sm font-medium">Confirm Password</label>
             <input 
               type="password" 
               id="confirm-password" 
               value={confirmPassword} 
               onChange={(e) => setConfirmPassword(e.target.value)} 
               required 
-              className="w-full px-3 py-2 mt-1 text-sm border rounded-lg focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"
+              className="w-full px-3 py-2 mt-1 text-sm border rounded-lg focus:ring-indigo-500 focus:border-indigo-500 border-border"
             />
           </div>
           <button 
@@ -61,7 +61,7 @@ const SignUp: React.FC = () => {
             Sign Up
           </button>
         </form>
-        <p className="text-sm text-center text-gray-600">
+        <p className="text-sm text-center">
           Already have an account? <a href="/" className="text-indigo-600 hover:text-indigo-500">Login</a>
         </p>
       </div>
