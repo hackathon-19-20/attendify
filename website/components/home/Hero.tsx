@@ -1,14 +1,8 @@
-'use client';
-import { FC } from 'react'
+"use client"
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
-
 import { Button } from "@/components/ui/button";
-import About from './About';
-import CardGrid from './Hero';
-import FooterDemo from './footer';
 
-const AttendifyLandingPage: React.FC = () => {
+export const Hero:React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -47,13 +41,5 @@ const AttendifyLandingPage: React.FC = () => {
           </div>
         </div>
       </div>
-      
-      {/* Other Components */}
-      <About/>
-      <CardGrid />
-      <FooterDemo/>
-    </>
-  );
-};
-
-export default AttendifyLandingPage;
+      </>)
+}

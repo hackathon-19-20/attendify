@@ -33,7 +33,7 @@ const SignUp: React.FC = () => {
 
   return (
     <div className="flex items-center justify-center min-h-[80vh] bg-background">
-      <div className="w-full max-w-md p-8 space-y-6 bg-secondary rounded-lg shadow-md text-foreground">
+      <div className="w-full max-w-md p-8 space-y-6 bg-secondary rounded-lg shadow-md text-foreground z-10">
         <h1 className="text-2xl font-bold text-center">Sign Up</h1>
         <form onSubmit={handleSignUp} className="space-y-4">
           {error && <p className="text-sm text-red-600">{error}</p>}
@@ -42,7 +42,7 @@ const SignUp: React.FC = () => {
             <input  
               type="email" 
               id="email" 
-              value={email} 
+              value={email}
               onChange={(e) => setEmail(e.target.value)} 
               required 
               className="w-full px-3 py-2 mt-1 text-sm border rounded-lg focus:ring-indigo-500 focus:border-indigo-500 border-border"
@@ -72,7 +72,7 @@ const SignUp: React.FC = () => {
           </div>
           <button 
             type="submit" 
-            className="w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50"
+            className="w-full px-4 py-2 text-sm font-medium text-background bg-foreground rounded-lg hover:bg-ring focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50"
           >
             Sign Up
           </button>

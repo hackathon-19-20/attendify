@@ -1,7 +1,7 @@
 'use client'
 import React from "react";
 import Image from "next/image";
-const CardGrid: FC = () => {
+const CardGrid: React.FC = () => {
   const cards = [
     { title: "Employee Database Management", color: "bg-green-50", image: "/images/calender.png" },
     { title: "Performance Management", color: "bg-pink-50", image: "/images/clock.png" },
