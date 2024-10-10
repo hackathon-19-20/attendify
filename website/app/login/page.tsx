@@ -28,7 +28,7 @@ const Login: React.FC = () => {
 
   return (
     <div className="flex items-center justify-center h-[80vh] bg-background">
-      <div className="w-full max-w-md p-8 space-y-6 bg-secondary rounded-lg shadow-md text-foreground">
+      <div className="w-full max-w-md p-8 space-y-6 bg-secondary rounded-lg shadow-md text-foreground z-10">
         <h1 className="text-2xl font-bold text-center">Login</h1>
         <form onSubmit={handleLogin} className="space-y-4">
           {error && <p className="text-sm text-red-600">{error}</p>}
