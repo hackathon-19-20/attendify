@@ -9,7 +9,7 @@ import { User2, UserPlus2 } from 'lucide-react'
 
 
 const Navbar: FC = ({ }) => {
-    return (<nav className="flex justify-between items-center py-4 px-20">
+    return (<nav className="flex justify-between items-center py-4 px-20 bg-red-300 ">
         <Link href="/"><p className="font-bold text-3xl">Attendify</p></Link>
 
         {/* For Desktop */}
