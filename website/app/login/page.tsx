@@ -21,7 +21,7 @@ const Login: React.FC = () => {
       const result = await loginUser(email, password);
 
       if (result.success) {
-        // Store token in localStorage for session management
+      
         localStorage.setItem('authToken', result.token); 
           console.log("suceess");
         router.push('/dashboard');
@@ -30,6 +30,7 @@ const Login: React.FC = () => {
       }
     } catch (error) {
       setError('An error occurred during login.');
+      return { success: false, message: 'Failed to log in. Please try again.' };
     }
   };
 

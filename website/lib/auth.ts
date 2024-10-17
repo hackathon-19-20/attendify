@@ -9,5 +9,5 @@ export const logout = () => {
 };
 
 export const isLoggedIn = () => {
-  return isAuthenticated;
+    return !!localStorage.getItem('token');
 };
