@@ -17,12 +17,20 @@ const Login: React.FC = () => {
       return;
     }
 
-    const result = await loginUser(email, password); // Call the login function from the service
+    try {
+      const result = await loginUser(email, password);
 
-    if (result.success) {
-      router.push('/home'); // Navigate to home page on success
-    } else {
-      setError(result.message || 'Login failed.');
+      if (result.success) {
+      
+        localStorage.setItem('authToken', result.token); 
+          console.log("suceess");
+        router.push('/dashboard');
+      } else {
+        setError(result.message || 'Login failed.');
+      }
+    } catch (error) {
+      setError('An error occurred during login.');
+      return { success: false, message: 'Failed to log in. Please try again.' };
     }
   };
 

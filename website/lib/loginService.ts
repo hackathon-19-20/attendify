@@ -1,4 +1,4 @@
-import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 
 export const loginUser = async (email: string, password: string) => {
@@ -9,9 +9,11 @@ export const loginUser = async (email: string, password: string) => {
     const querySnapshot = await getDocs(q);
 
     if (!querySnapshot.empty) {
-      return { success: true }; // User found
+      const userDoc = querySnapshot.docs[0];
+      const token = userDoc.id;
+      return { success: true, token };
     } else {
-      return { success: false, message: 'Invalid email or password.' }; // User not found
+      return { success: false, message: 'Invalid email or password.' };
     }
   } catch (err) {
     console.error('Error logging in:', err);
