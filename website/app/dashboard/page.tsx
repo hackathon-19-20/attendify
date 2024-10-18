@@ -5,8 +5,9 @@ import { useRouter } from 'next/navigation'; // Import correct useRouter
 import { isLoggedIn } from '../../lib/auth';
 import Sidebar from '../../components/Sidebar';
 import AttendanceDashboard from '../../components/AttendanceDashboard';
+import Attendance from '@/components/Attendance';
 
-const Dashboard = () => {
+const Dasshboard = () => {
   const router = useRouter();
 // insert a check
   // useEffect(() => {
@@ -20,8 +21,9 @@ const Dashboard = () => {
     <div className="flex">
       <Sidebar />
       <AttendanceDashboard />
+   
     </div>
   );
 };
 
-export default Dashboard;
+export default Dasshboard;
