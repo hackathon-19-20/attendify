@@ -1,15 +1,41 @@
+import React from 'react';
+import { Drawer, List, ListItem, ListItemIcon, ListItemText, Toolbar, Divider } from '@mui/material';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Link from 'next/link';
 
-const Sidebar = () => {
+const drawerWidth = 240;
+
+const Sidebar: React.FC = () => {
+  const menuItems = [
+    { text: 'Dashboard', icon: <DashboardIcon />, href: '/dashboard' },
+    { text: 'Timetable', icon: <CalendarTodayIcon />, href: '/timetable' },
+    { text: 'Attendance', icon: <CheckCircleIcon />, href: '/attendance' },
+  ];
+
   return (
-    <div className="h-screen w-64 bg-gray-800 text-white p-4 fixed">
-      <h2 className="text-2xl font-bold mb-4">Dashboard</h2>
-      <ul>
-        <li className="mb-4"><Link href="/dashboard">Dashboard</Link></li>
-        <li className="mb-4"><Link href="/timetable">Timetable</Link></li>
-        <li className="mb-4"><Link href="/attendance">Attendance</Link></li>
-      </ul>
-    </div>
+    <Drawer
+      variant="permanent"
+      sx={{
+        width: drawerWidth,
+        flexShrink: 0,
+        [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+      }}
+    >
+      <Toolbar />
+      <div>
+        <List>
+          {menuItems.map((item) => (
+            <ListItem button component={Link} href={item.href} key={item.text}>
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItem>
+          ))}
+        </List>
+        <Divider />
+      </div>
+    </Drawer>
   );
 };
 
