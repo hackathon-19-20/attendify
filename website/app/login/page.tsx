@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { loginUser } from '../../lib/loginService';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -20,8 +21,7 @@ const Login: React.FC = () => {
     try {
       const result = await loginUser(email, password);
 
-      if (result.success) {
-      
+      if (result.success && result.token) {
         localStorage.setItem('authToken', result.token); 
           console.log("suceess");
         router.push('/dashboard');
@@ -35,7 +35,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-[80vh] bg-background">
+    <div className="flex items-center justify-center h-[90vh] bg-background">
       <div className="w-full max-w-md p-8 space-y-6 bg-secondary rounded-lg shadow-md text-foreground z-10">
         <h1 className="text-2xl font-bold text-center">Login</h1>
         <form onSubmit={handleLogin} className="space-y-4">
@@ -64,13 +64,13 @@ const Login: React.FC = () => {
           </div>
           <button
             type="submit"
-            className="w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50"
+            className="w-full px-4 py-2 text-sm font-medium text-background bg-foreground rounded-lg hover:bg-ring focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50"
           >
             Login
           </button>
         </form>
         <p className="text-sm text-center">
-          Don't have an account? <a href="/signup" className="text-indigo-600 hover:text-indigo-500">Sign up</a>
+          Don't have an account? <Link href="/sign-up" className="text-indigo-600 hover:text-indigo-500">Sign up</Link>
         </p>
       </div>
     </div>

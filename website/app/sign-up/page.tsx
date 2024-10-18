@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { registerUser } from '../../lib/signupServics'; 
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const SignUp: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -21,7 +22,7 @@ const SignUp: React.FC = () => {
 
     const result = await registerUser(email, password); 
     if (result.success) {
-      router.push('/home');
+      router.push('/dashboard');
     } else {
       if (result.message === 'User already exists. Please log in.') {
         router.push('/'); 
@@ -32,7 +33,7 @@ const SignUp: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[80vh] bg-background">
+    <div className="flex items-center justify-center min-h-[90vh] bg-background">
       <div className="w-full max-w-md p-8 space-y-6 bg-secondary rounded-lg shadow-md text-foreground z-10">
         <h1 className="text-2xl font-bold text-center">Sign Up</h1>
         <form onSubmit={handleSignUp} className="space-y-4">
@@ -78,7 +79,7 @@ const SignUp: React.FC = () => {
           </button>
         </form>
         <p className="text-sm text-center">
-          Already have an account? <a href="/" className="text-indigo-600 hover:text-indigo-500">Login</a>
+          Already have an account? <Link href="/login" className="text-indigo-600 hover:text-indigo-500">Login</Link>
         </p>
       </div>
     </div>
