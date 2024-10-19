@@ -8,7 +8,7 @@ export const Hero:React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(true);
-    }, 500); 
+    }, 100); 
     return () => clearTimeout(timer);
   }, []);
 
