@@ -32,7 +32,7 @@ const Sidebar: React.FC = () => {
       <div>
         <List>
           {menuItems.map((item) => (
-            <ListItem button component={Link} href={item.href} key={item.text}>
+            <ListItem component={Link} href={item.href} key={item.text}>
               <ListItemIcon sx={{ color: isDarkMode ? '#fff' : '#000'}}>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItem>

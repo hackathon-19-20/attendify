@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google"
 import "./globals.css";
 import { ThemeProvider } from "@/components/themeProvider";
-import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
   title: "Attendify",
@@ -26,11 +25,10 @@ export default function RootLayout({
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
           {children}
         </ThemeProvider>
       </body>
