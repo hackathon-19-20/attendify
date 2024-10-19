@@ -16,8 +16,13 @@ const monthlyAttendance = [
 ];
 
 const AttendanceDashboard: React.FC = () => {
-  return (
-    <Box sx={{ flexGrow: 1, padding: 3 }}>
+  return ( 
+    <Box sx={{ flexGrow: 1, padding: 3, marginTop: {
+      xs: 2,     
+      sm: 3,     
+      md: 4,      
+      lg: 5,      
+    }, }}>
       <Grid container spacing={3}>
         {/* Attendance Summary */}
         <Grid item xs={12} md={4}>
