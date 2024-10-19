@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation'; // Import correct useRouter
 import { isLoggedIn } from '../../lib/auth';
 import Sidebar from '../../components/Sidebar';
-import AttendanceDashboard from '../../components/AttendanceDashboard';
+import AttendanceDashboard from '../../components/Dashboard';
 import Attendance from '@/components/Attendance';
 
 const Dasshboard = () => {
