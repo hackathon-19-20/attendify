@@ -19,22 +19,7 @@ const links = [
 
 
 export default function NavLinks() {
-  const [authToken, setAuthToken] = useState<string | null>(null);
   const pathName = usePathname();
-
-  const checkAuthToken = () => {
-    const token = localStorage.getItem("authToken");
-    setAuthToken(token);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("authToken");
-    setAuthToken(null);
-  };
-
-  useEffect(() => {
-    checkAuthToken();
-  }, [pathName]);
 
   return (
     <>

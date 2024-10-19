@@ -5,7 +5,6 @@ import FooterDemo from "@/components/home/Footer";
 import { Hero } from "@/components/home/Hero";
 import Navbar from "@/components/Navbar";
 
-
 const AttendifyLandingPage: React.FC = () => {
   return (<>
     <Navbar />
