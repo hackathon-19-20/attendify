@@ -44,10 +44,10 @@ const Attendance = () => {
             day.classes.map((subject, idx) => (
               <Grid item xs={12} sm={6} md={4} key={idx}>
                 <Paper elevation={3} sx={{ padding: '16px' }}>
-                  <Typography variant="h6 ">{subject}</Typography>
+                  <Typography variant="h6">{subject}</Typography>
                   <Button variant="contained" color="primary" onClick={() => markAttendance(day.day, subject, 'Present')}>Present</Button>
                   <Button variant="contained" color="secondary" onClick={() => markAttendance(day.day, subject, 'Absent')}>Absent</Button>
-                  <Button variant="contained" color="default" onClick={() => markAttendance(day.day, subject, 'Leave')}>Leave</Button>
+                  <Button variant="contained" color="inherit" onClick={() => markAttendance(day.day, subject, 'Leave')}>Leave</Button>
                 </Paper>
               </Grid>
             ))
@@ -67,7 +67,7 @@ const Attendance = () => {
                     <Typography variant="h6">{subject}</Typography>
                     <Button variant="contained" color="primary" onClick={() => markAttendance(day.day, subject, 'Present')}>Present</Button>
                     <Button variant="contained" color="secondary" onClick={() => markAttendance(day.day, subject, 'Absent')}>Absent</Button>
-                    <Button variant="contained" color="default" onClick={() => markAttendance(day.day, subject, 'Leave')}>Leave</Button>
+                    <Button variant="contained" color="inherit" onClick={() => markAttendance(day.day, subject, 'Leave')}>Leave</Button>
                   </Paper>
                 </Grid>
               ))}

@@ -69,7 +69,7 @@ const Navbar: FC = () => {
               <NavLink key={option.label} href={option.href} text={option.label} variant={option.variant!} />
             )
           )}
-          <ThemeToggle />
+          {/* <ThemeToggle /> */}
         </div>
 
         {/* Mobile View */}
@@ -113,7 +113,7 @@ const MobileMenu: FC<{ authToken: string | null; handleLogout: () => void; optio
       )}
 
       <DropdownMenuItem className="flex justify-center">
-        <ThemeToggle />
+        {/* <ThemeToggle /> */}
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
