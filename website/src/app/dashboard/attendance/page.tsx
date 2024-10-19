@@ -1,13 +1,9 @@
-import Attendance from '@/components/Attendance';
-import { Sidebar } from 'lucide-react';
-
+import Attendance from '@/components/Dashboard/Attendance';
 
 const AttendancePage = () => {
   return (
     <div className="flex">
-      <Sidebar />
       <Attendance />
-   
     </div>
   )
 };
