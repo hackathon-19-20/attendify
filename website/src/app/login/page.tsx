@@ -42,7 +42,7 @@ const Login: React.FC = () => {
       }
     } catch (error) {
       setError('An error occurred during login.');
-      return { success: false, message: 'Failed to log in. Please try again.' };
+      return { success: false, message: error };
     }
   };
 
@@ -84,7 +84,7 @@ const Login: React.FC = () => {
             </button>
           </form>
           <p className="text-sm text-center">
-            Don't have an account? <Link href="/sign-up" className="text-indigo-600 hover:text-indigo-500">Sign up</Link>
+            Don&apos;t have an account? <Link href="/sign-up" className="text-indigo-600 hover:text-indigo-500">Sign up</Link>
           </p>
         </div>
       </div>
