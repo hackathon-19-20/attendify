@@ -1,13 +1,12 @@
-let isAuthenticated = false;
+"use server"
+import { cookies } from 'next/headers'
 
-export const login = () => {
-  isAuthenticated = true;
-};
+export async function getCookie(name: string) {
+    const cookieStore = cookies()
+    const data = cookieStore.get(name)
+    return data?.value;
+}
 
-export const logout = () => {
-  isAuthenticated = false;
-};
-
-export const isLoggedIn = () => {
-    return !!localStorage.getItem('token');
-};
+export async function removeCookie(name: string) {
+  cookies().delete(name)
+}

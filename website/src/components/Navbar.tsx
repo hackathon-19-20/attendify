@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { FC, useEffect, useState } from "react";
 import { Button } from "./ui/button";
-import { ThemeToggle } from "./Buttons/ThemeToggle";
+// import { ThemeToggle } from "./Buttons/ThemeToggle";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator } from "./ui/dropdown-menu";
-import { usePathname } from "next/navigation";
+import { usePathname , useRouter } from "next/navigation";
+import { getCookie, removeCookie } from "@/lib/auth";
 
 interface variantOptions {
   variant: "link" | "default" | "destructive" | "outline" | "secondary" | "ghost" | null | undefined;
@@ -28,10 +29,12 @@ const navbarOptions = [
 const Navbar: FC = () => {
   const [authToken, setAuthToken] = useState<string | null>(null);
   const pathname = usePathname();
+  const router = useRouter();
 
-  const checkAuthToken = () => {
-    const token = localStorage.getItem("authToken");
-    setAuthToken(token);
+  const checkAuthToken = async () => {
+    const token = await getCookie("authToken");
+    if(token)
+      setAuthToken(token);
   };
 
   useEffect(() => {
@@ -39,7 +42,9 @@ const Navbar: FC = () => {
   }, [pathname]);
 
   const handleLogout = () => {
-    localStorage.removeItem("authToken");
+    removeCookie("authToken");
+    console.log("Signed out");
+    router.push("/");
     setAuthToken(null);
   };
 
@@ -60,8 +65,8 @@ const Navbar: FC = () => {
         <div className="hidden md:flex justify-around items-center gap-6">
           {filteredOptions.map((option) =>
             option.isLogout ? (
-              <Link href="/">
-                <Button key={option.label} className="text-lg" onClick={handleLogout}>
+              <Link href="/" key={option.label} >
+                <Button className="text-lg" onClick={handleLogout}>
                   {option.label}
                 </Button>
               </Link>
@@ -89,7 +94,7 @@ const NavLink: FC<{ href: string; text: string; variant: "link" | "default" | "d
   </Link>
 );
 
-const MobileMenu: FC<{ authToken: string | null; handleLogout: () => void; options: any[] }> = ({ authToken, handleLogout, options }) => (
+const MobileMenu: FC<{ authToken: string | null; handleLogout: () => void; options: navbarOptionType[] }> = ({handleLogout, options }) => (
   <DropdownMenu>
     <DropdownMenuTrigger className="flex flex-col md:hidden gap-1 focus:outline-none">
       <MenuIcon />

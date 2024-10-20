@@ -1,29 +1,17 @@
 "use client"
- 
-import { useState, useEffect } from "react";
+
 import { PowerIcon } from "lucide-react";
-import { useRouter, usePathname } from "next/navigation"; 
+import { useRouter } from "next/navigation";
+import { removeCookie } from "@/lib/auth";
 
 export default function SignOutButton() {
-  const [authToken, setAuthToken] = useState<string | null>(null);
-  const pathName = usePathname();
-  const router = useRouter(); 
-
-  const checkAuthToken = () => {
-    const token = localStorage.getItem("authToken");
-    setAuthToken(token);
-  };
+  const router = useRouter();
 
   const handleLogout = () => {
-    localStorage.removeItem("authToken");
-    setAuthToken(null);
+    removeCookie("authToken");
     console.log("Signed out");
-    router.push("/"); 
+    router.push("/");
   };
-
-  useEffect(() => {
-    checkAuthToken();
-  }, [pathName]);
 
   return (
     <button

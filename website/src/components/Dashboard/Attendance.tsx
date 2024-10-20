@@ -38,7 +38,7 @@ const Attendance = () => {
       
       <TabPanel value={tabIndex} index={0}>
         {/* Today's Classes */}
-        <Typography variant="h6">Today's Classes - {format(new Date(), 'yyyy-MM-dd')}</Typography>
+        <Typography variant="h6">Today&apos;s Classes - {format(new Date(), 'yyyy-MM-dd')}</Typography>
         <Grid container spacing={2}>
           {timetable.filter(day => isToday(new Date(day.day))).map((day) =>
             day.classes.map((subject, idx) => (

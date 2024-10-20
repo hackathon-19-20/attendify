@@ -4,7 +4,6 @@ import {LayoutDashboard , UserRoundCheck, CalendarFold} from "lucide-react"
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import { useEffect, useState } from "react";
 
 const links = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -19,22 +18,7 @@ const links = [
 
 
 export default function NavLinks() {
-  const [authToken, setAuthToken] = useState<string | null>(null);
   const pathName = usePathname();
-
-  const checkAuthToken = () => {
-    const token = localStorage.getItem("authToken");
-    setAuthToken(token);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("authToken");
-    setAuthToken(null);
-  };
-
-  useEffect(() => {
-    checkAuthToken();
-  }, [pathName]);
 
   return (
     <>
