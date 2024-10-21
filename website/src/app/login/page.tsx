@@ -4,17 +4,7 @@ import { loginUser } from '@/lib/loginService';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
-
-
-export async function setCookie(name: string, value: string, days: number) {
-  let expires = "";
-  if (days) {
-      const date = new Date();
-      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-      expires = "; expires=" + date.toUTCString();
-  }
-  document.cookie = name + "=" + (value || "") + expires + "; path=/";
-}
+import { setCookie } from '@/lib/cookies';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -34,8 +24,8 @@ const Login: React.FC = () => {
       const result = await loginUser(email, password);
 
       if (result.success && result.token) {
-        setCookie("authToken" , result.token , 7);
-        console.log("suceess");
+        const res = await setCookie("authToken" , result.token , 7);
+        console.log(res);
         router.push('/dashboard');
       } else {
         setError(result.message || 'Login failed.');

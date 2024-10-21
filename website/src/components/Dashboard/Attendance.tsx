@@ -25,10 +25,10 @@ const Attendance = () => {
 
   return (
     <Box sx={{ width: '100%', marginTop: {
-      xs: 2,     
-      sm: 3,     
-      md: 4,      
-      lg: 5,      
+      xs: -5,
+      sm: -5,
+      md: -3,
+      lg: -3,    
     } }}>
      
       <Tabs value={tabIndex} onChange={handleChange} centered>
