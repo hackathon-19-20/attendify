@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 
 
-export async function setCookie(name: string, value: string, days: number) {
+export function setCookie(name: string, value: string, days: number) {
   let expires = "";
   if (days) {
       const date = new Date();
