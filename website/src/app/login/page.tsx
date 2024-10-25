@@ -34,8 +34,7 @@ const Login: React.FC = () => {
       const result = await loginUser(email, password);
 
       if (result.success && result.token) {
-        setCookie("authToken" , result.token , 7);
-        console.log("suceess");
+        await setCookie("authToken" , result.token , 7);
         router.push('/dashboard');
       } else {
         setError(result.message || 'Login failed.');
