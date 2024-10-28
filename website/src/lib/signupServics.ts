@@ -1,26 +1,31 @@
-import { collection, doc, query, where, getDocs, setDoc } from 'firebase/firestore';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { app } from '../firebaseConfig';
 import { db } from '../firebaseConfig';
+import { collection, doc, setDoc } from 'firebase/firestore';
 import { nanoid } from 'nanoid';
+import { setUserCookie } from './cookiesClient'; 
 
-const generateUserId = () => {
-  return `U-${nanoid(8)}`; 
-};
+const auth = getAuth(app);
+
+const generateUserId = () => `U-${nanoid(8)}`;
 
 export const registerUser = async (email: string, password: string) => {
   try {
-    const usersRef = collection(db, 'userDetails');
-
-    const q = query(usersRef, where('email', '==', email));
-    const querySnapshot = await getDocs(q);
-
-    if (!querySnapshot.empty) {
-      return { success: false, message: 'User already exists. Please log in.' };
-    }
-
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const userId = generateUserId();
+    const userData = {
+      email,
+      userId,
+      uid: userCredential.user.uid,
+    };
 
-    await setDoc(doc(usersRef, userId), { email, password });
+    // Save user details to Firestore
+    await setDoc(doc(collection(db, 'userDetails'), userId), userData);
 
+    // Store user UID in cookies
+    await setUserCookie(userCredential.user.uid, 7); // Set cookie for 7 days
+
+    console.log("User registered and saved to cookies:", userData);
     return { success: true, userId };
   } catch (err) {
     console.error('Error registering user:', err);

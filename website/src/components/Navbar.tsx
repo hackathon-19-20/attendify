@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { FC, useEffect, useState } from "react";
 import { Button } from "./ui/button";
-// import { ThemeToggle } from "./Buttons/ThemeToggle";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator } from "./ui/dropdown-menu";
-import { usePathname , useRouter } from "next/navigation";
-import { getCookie, removeCookie } from "@/lib/auth";
+import { usePathname, useRouter } from "next/navigation";
+import { signOut, onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebaseConfig';
 
 interface variantOptions {
   variant: "link" | "default" | "destructive" | "outline" | "secondary" | "ghost" | null | undefined;
@@ -31,21 +31,23 @@ const Navbar: FC = () => {
   const pathname = usePathname();
   const router = useRouter();
 
-  const checkAuthToken = async () => {
-    const token = await getCookie("authToken");
-    if(token)
-      setAuthToken(token);
-  };
-
   useEffect(() => {
-    checkAuthToken();
-  }, [pathname]);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setAuthToken(user.uid);
+      } else {
+        setAuthToken(null);
+      }
+    });
 
-  const handleLogout = () => {
-    removeCookie("authToken");
-    console.log("Signed out");
+    // Cleanup on component unmount
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    setAuthToken(null);  // Clear authToken immediately
     router.push("/");
-    setAuthToken(null);
   };
 
   const filteredOptions = navbarOptions.filter((option) => {
@@ -61,23 +63,18 @@ const Navbar: FC = () => {
           <p className="font-bold text-3xl text-foreground">Attendify</p>
         </Link>
 
-        {/* Desktop View */}
         <div className="hidden md:flex justify-around items-center gap-6">
           {filteredOptions.map((option) =>
             option.isLogout ? (
-              <Link href="/" key={option.label} >
-                <Button className="text-lg" onClick={handleLogout}>
-                  {option.label}
-                </Button>
-              </Link>
+              <Button key={option.label} className="text-lg" onClick={handleLogout}>
+                {option.label}
+              </Button>
             ) : (
               <NavLink key={option.label} href={option.href} text={option.label} variant={option.variant!} />
             )
           )}
-          {/* <ThemeToggle /> */}
         </div>
 
-        {/* Mobile View */}
         <MobileMenu authToken={authToken} handleLogout={handleLogout} options={filteredOptions} />
       </nav>
 
@@ -94,7 +91,7 @@ const NavLink: FC<{ href: string; text: string; variant: "link" | "default" | "d
   </Link>
 );
 
-const MobileMenu: FC<{ authToken: string | null; handleLogout: () => void; options: navbarOptionType[] }> = ({handleLogout, options }) => (
+const MobileMenu: FC<{ authToken: string | null; handleLogout: () => void; options: navbarOptionType[] }> = ({ handleLogout, options }) => (
   <DropdownMenu>
     <DropdownMenuTrigger className="flex flex-col md:hidden gap-1 focus:outline-none">
       <MenuIcon />
@@ -106,9 +103,7 @@ const MobileMenu: FC<{ authToken: string | null; handleLogout: () => void; optio
       {options.map((option) =>
         option.isLogout ? (
           <DropdownMenuItem key={option.label}>
-            <Link href="/">
-              <Button onClick={handleLogout}>{option.label}</Button>
-            </Link>
+            <Button onClick={handleLogout}>{option.label}</Button>
           </DropdownMenuItem>
         ) : (
           <DropdownMenuItem key={option.label}>
@@ -116,10 +111,6 @@ const MobileMenu: FC<{ authToken: string | null; handleLogout: () => void; optio
           </DropdownMenuItem>
         )
       )}
-
-      <DropdownMenuItem className="flex justify-center">
-        {/* <ThemeToggle /> */}
-      </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
 );
@@ -129,11 +120,7 @@ const SVGWave = () => {
   const [isWave, setIsWave] = useState(true);
 
   useEffect(() => {
-    if (pathname === "/dashboard" || pathname === "/attendance") {
-      setIsWave(false);
-    } else {
-      setIsWave(true);
-    }
+    setIsWave(!(pathname === "/dashboard" || pathname === "/attendance"));
   }, [pathname]);
 
   return (
@@ -147,7 +134,7 @@ const SVGWave = () => {
           <div
             style={{
               width: "100%",
-              height: "30px", 
+              height: "30px",
               backgroundColor: "#fca5a5",
               transition: "height 1s ease",
             }}

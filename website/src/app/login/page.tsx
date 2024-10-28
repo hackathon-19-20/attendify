@@ -4,7 +4,9 @@ import { loginUser } from '@/lib/loginService';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
-import { setCookie } from '@/lib/cookies';
+// import { setCookie } from '@/lib/cookiesClient';
+import { signInWithEmailPassword } from '@/lib/auth';
+import { setUserCookie } from '@/lib/cookiesClient';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -14,26 +16,33 @@ const Login: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     if (!email || !password) {
       setError('Please fill in all fields.');
       return;
     }
-
+  
     try {
-      const result = await loginUser(email, password);
-
-      if (result.success && result.token) {
-        await setCookie("authToken" , result.token , 7);
-        router.push('/dashboard');
+      const response = await loginUser(email, password);
+      if (response.success) {
+        console.log("I AM IN!"); // Debugging log
+  
+        if (response.token) { // Check if token is defined
+          setUserCookie(response.token, 7); // Store the token in a cookie for 7 days
+          router.push('/dashboard'); // Redirect to dashboard
+        } else {
+          setError('No token received.'); // Handle the case where token is undefined
+        }
       } else {
-        setError(result.message || 'Login failed.');
+        setError(response.message || 'Login failed. Please try again.'); // Ensure message is a string
       }
     } catch (error) {
-      setError('An error occurred during login.');
-      return { success: false, message: error };
+      alert("An error occurred during login: " + (error instanceof Error ? error.message : "Unknown error"));
+      setError('An unexpected error occurred. Please try again.');
     }
   };
+  
+  
 
   return (
     <div className="login-container">
