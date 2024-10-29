@@ -7,17 +7,15 @@ import { setUserCookie } from './cookiesClient';
 
 const auth = getAuth(app);
 
-const generateUserId = () => `U-${nanoid(8)}`;
 
 export const registerUser = async (email: string, password: string) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const userId = generateUserId();
     const userData = {
       email,
-      userId,
       uid: userCredential.user.uid,
     };
+    const userId = `U-${userCredential.user.uid}`;
 
     // Save user details to Firestore
     await setDoc(doc(collection(db, 'userDetails'), userId), userData);

@@ -1,47 +1,45 @@
-// authUtils.ts
-import { auth, googleProvider } from "../firebaseConfig";
-import {
-  signInWithPopup,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  UserCredential,
-} from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { db } from '../firebaseConfig';
+import { collection, doc, getDoc, setDoc } from 'firebase/firestore';
+import { nanoid } from 'nanoid';
+import { setUserCookie } from './cookiesClient';
 
-// Google Sign-In
-export const signInWithGoogle = async (): Promise<UserCredential | null> => {
-  try {
-    const result = await signInWithPopup(auth, googleProvider);
-    return result;
-  } catch (error) {
-    console.error("Error during Google sign-in:", error);
-    return null;
-  }
-};
 
-// Sign-Up with Email and Password
-export const signUpWithEmailPassword = async (
-  email: string,
-  password: string
-): Promise<UserCredential | null> => {
-  try {
-    const result = await createUserWithEmailAndPassword(auth, email, password);
-    return result;
-  } catch (error) {
-    console.error("Error during sign-up:", error);
-    return null;
-  }
-};
+export const googleSignIn = async () => {
+  const auth = getAuth();
+  const provider = new GoogleAuthProvider();
 
-// Sign-In with Email and Password
-export const signInWithEmailPassword = async (
-  email: string,
-  password: string
-): Promise<UserCredential | null> => {
   try {
-    const result = await signInWithEmailAndPassword(auth, email, password);
-    return result;
+    // Sign in with Google
+    const result = await signInWithPopup(auth, provider);
+    const token = await result.user.getIdToken();
+    const uid = result.user.uid;
+    const email = result.user.email;
+
+    // Check if user already exists in Firestore
+    const userRef = doc(collection(db, 'userDetails'), `U-${uid}`);
+    const userSnap = await getDoc(userRef);
+
+    // If user does not exist, create a new user document
+    if (!userSnap.exists()) {
+      const userId = uid
+      const userData = {
+        email,
+        uid: `U-${uid}`,
+      };
+
+      // Save user details to Firestore
+      await setDoc(userRef, userData);
+
+      console.log("New Google user registered:", userData);
+    }
+
+    // Store UID in cookies (7 days)
+    await setUserCookie(uid, 7);
+
+    return { success: true, token };
   } catch (error) {
-    console.error("Error during sign-in:", error);
-    return null;
+    console.error("Google sign-in error:", error);
+    return { success: false, message: "GOOGLE SIGN_IN ERROR" };
   }
 };

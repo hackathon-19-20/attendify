@@ -1,11 +1,10 @@
 'use client';
 import React, { useState } from 'react';
 import { loginUser } from '@/lib/loginService';
+import { googleSignIn } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
-// import { setCookie } from '@/lib/cookiesClient';
-import { signInWithEmailPassword } from '@/lib/auth';
 import { setUserCookie } from '@/lib/cookiesClient';
 
 const Login: React.FC = () => {
@@ -16,14 +15,32 @@ const Login: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     if (!email || !password) {
       setError('Please fill in all fields.');
       return;
     }
-  
+
     try {
       const response = await loginUser(email, password);
+      if (response.success) {
+        if (response.token) {
+          setUserCookie(response.token, 7); // Store the token in a cookie for 7 days
+          router.push('/dashboard'); // Redirect to dashboard
+        } else {
+          setError('No token received.');
+        }
+      } else {
+        setError(response.message || 'Login failed. Please try again.');
+      }
+    } catch (error) {
+      setError('An unexpected error occurred. Please try again.');
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const response = await googleSignIn();
       if (response.success) {
         console.log("I AM IN!"); // Debugging log
   
@@ -37,12 +54,9 @@ const Login: React.FC = () => {
         setError(response.message || 'Login failed. Please try again.'); // Ensure message is a string
       }
     } catch (error) {
-      alert("An error occurred during login: " + (error instanceof Error ? error.message : "Unknown error"));
-      setError('An unexpected error occurred. Please try again.');
+      setError('An error occurred with Google login.');
     }
   };
-  
-  
 
   return (
     <div className="login-container">
@@ -81,6 +95,12 @@ const Login: React.FC = () => {
               Login
             </button>
           </form>
+          <button
+            onClick={handleGoogleLogin}
+            className="w-full mt-4 px-4 py-2 text-sm font-medium text-background bg-blue-500 rounded-lg hover:bg-blue-600 focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50"
+          >
+            Login with Google
+          </button>
           <p className="text-sm text-center">
             Don&apos;t have an account? <Link href="/sign-up" className="text-indigo-600 hover:text-indigo-500">Sign up</Link>
           </p>
