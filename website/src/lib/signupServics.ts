@@ -2,7 +2,6 @@ import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { app } from '../firebaseConfig';
 import { db } from '../firebaseConfig';
 import { collection, doc, setDoc } from 'firebase/firestore';
-import { nanoid } from 'nanoid';
 import { setUserCookie } from './cookiesClient'; 
 
 const auth = getAuth(app);

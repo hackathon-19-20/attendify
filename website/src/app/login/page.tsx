@@ -34,6 +34,7 @@ const Login: React.FC = () => {
         setError(response.message || 'Login failed. Please try again.');
       }
     } catch (error) {
+      console.log(error);
       setError('An unexpected error occurred. Please try again.');
     }
   };
@@ -54,6 +55,7 @@ const Login: React.FC = () => {
         setError(response.message || 'Login failed. Please try again.'); // Ensure message is a string
       }
     } catch (error) {
+      console.log(error);
       setError('An error occurred with Google login.');
     }
   };

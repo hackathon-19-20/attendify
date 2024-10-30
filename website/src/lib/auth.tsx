@@ -1,7 +1,6 @@
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { db } from '../firebaseConfig';
 import { collection, doc, getDoc, setDoc } from 'firebase/firestore';
-import { nanoid } from 'nanoid';
 import { setUserCookie } from './cookiesClient';
 
 
@@ -12,6 +11,7 @@ export const googleSignIn = async () => {
   try {
     // Sign in with Google
     const result = await signInWithPopup(auth, provider);
+    console.log(result.user.uid)
     const token = await result.user.getIdToken();
     const uid = result.user.uid;
     const email = result.user.email;
@@ -22,7 +22,6 @@ export const googleSignIn = async () => {
 
     // If user does not exist, create a new user document
     if (!userSnap.exists()) {
-      const userId = uid
       const userData = {
         email,
         uid: `U-${uid}`,

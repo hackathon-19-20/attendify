@@ -28,7 +28,7 @@ const navbarOptions = [
 
 const Navbar: FC = () => {
   const [authToken, setAuthToken] = useState<string | null>(null);
-  const pathname = usePathname();
+  // const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
