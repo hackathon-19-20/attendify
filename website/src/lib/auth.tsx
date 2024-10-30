@@ -1,0 +1,45 @@
+import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { db } from '../firebaseConfig';
+import { collection, doc, getDoc, setDoc } from 'firebase/firestore';
+import { nanoid } from 'nanoid';
+import { setUserCookie } from './cookiesClient';
+
+
+export const googleSignIn = async () => {
+  const auth = getAuth();
+  const provider = new GoogleAuthProvider();
+
+  try {
+    // Sign in with Google
+    const result = await signInWithPopup(auth, provider);
+    const token = await result.user.getIdToken();
+    const uid = result.user.uid;
+    const email = result.user.email;
+
+    // Check if user already exists in Firestore
+    const userRef = doc(collection(db, 'userDetails'), `U-${uid}`);
+    const userSnap = await getDoc(userRef);
+
+    // If user does not exist, create a new user document
+    if (!userSnap.exists()) {
+      const userId = uid
+      const userData = {
+        email,
+        uid: `U-${uid}`,
+      };
+
+      // Save user details to Firestore
+      await setDoc(userRef, userData);
+
+      console.log("New Google user registered:", userData);
+    }
+
+    // Store UID in cookies (7 days)
+    await setUserCookie(uid, 7);
+
+    return { success: true, token };
+  } catch (error) {
+    console.error("Google sign-in error:", error);
+    return { success: false, message: "GOOGLE SIGN_IN ERROR" };
+  }
+};
