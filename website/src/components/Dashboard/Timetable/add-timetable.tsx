@@ -20,9 +20,10 @@ import {
     DrawerTitle,
     DrawerTrigger,
 } from "@/components/ui/drawer"
-// import { Input } from "@/components/ui/input"
-// import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress";
+import { nanoid } from 'nanoid';
+import { XIcon } from "lucide-react"
 
 export default function AddTimetable() {
     const [open, setOpen] = React.useState(false)
@@ -85,17 +86,17 @@ export function MultiStepForm({ totalSteps }: { totalSteps: number }) {
     const renderForm = () => {
         switch (currentStep) {
             case 0:
-                return <FormStep  k={1}/>;
+                return <FormStep k={1} />;
             case 1:
-                return <FormStep  k={2}/>;
+                return <FormStep k={2} />;
             case 2:
-                return <FormStep  k={3}/>;
+                return <FormStep k={3} />;
             case 3:
-                return <FormStep  k={4}/>;
+                return <FormStep k={4} />;
             case 4:
-                return <FormStep  k={5}/>;
+                return <FormStep k={5} />;
             case 5:
-                return <FormStep  k={6}/>;
+                return <FormStep k={6} />;
             case 6:
                 return <FormStep k={7} />;
             default:
@@ -115,7 +116,7 @@ export function MultiStepForm({ totalSteps }: { totalSteps: number }) {
     }
 
     return (
-        <div className="container mx-auto">
+        <div className="container mx-auto px-4 md:px-0">
             <div className="h-1 w-full flex justify-between">
                 <div></div>
                 {progressBar()}
@@ -136,12 +137,56 @@ export function MultiStepForm({ totalSteps }: { totalSteps: number }) {
     );
 }
 
-function FormStep({k} : {k:number}) {
+interface Timetable {
+    semester: number,
+    courses: { id: string, name: string }[],
+}
+
+function FormStep({ k }: { k: number }) {
+    const [timetable, setTimetable] = React.useState<Timetable>({ semester: 1, courses: [] });
+    const [courseInput, setCourseInput] = React.useState<string>();
+
+    function handleCourseInput() {
+        const course = courseInput?.trim();
+        if (course) {
+            setTimetable(prev => ({
+                ...prev,
+                courses: [...prev.courses, { id: nanoid(5), name: course }],
+            }))
+            setCourseInput("");
+        }
+    }
     return (
-        <div>
+        <form className="flex flex-col gap-4">
             <h2>Form Step {k}</h2>
-            {/* Add your form fields here */}
-        </div>
+            <Input placeholder="Semester" />
+            <div className="flex gap-2">
+                <Input placeholder="Courses" onChange={(e) => { setCourseInput(e.target.value) }} value={courseInput} />
+                <Button type="button" onClick={() => { handleCourseInput() }}>+</Button>
+            </div>
+            {timetable.courses.length > 0 && <div className="flex flex-wrap gap-2">
+                {timetable.courses.map((course) => {
+                    return (
+                        <div
+                            key={course.id}
+                            className="bg-secondary rounded-full w-fit px-3 py-1 flex justify-center items-center"
+                        >
+                            {course.name}
+                            <Button variant="secondary" className="p-0 h-4" type="button" 
+                                onClick={() => { 
+                                    setTimetable(prev => ({ 
+                                        ...prev, 
+                                        courses: prev.courses.filter(c => c !== course) 
+                                        })
+                                    ); 
+                                }}>
+                                <XIcon className="h-4" />
+                            </Button>
+                        </div>
+                    )
+                })}
+            </div>}
+        </form >
     );
 }
 
