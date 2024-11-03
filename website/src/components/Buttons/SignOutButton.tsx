@@ -2,7 +2,7 @@
 
 import { PowerIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { removeCookie } from "@/lib/auth";
+import { removeCookie } from "@/lib/cookiesServer";
 
 export default function SignOutButton() {
   const router = useRouter();

@@ -4,7 +4,6 @@ import { registerUser } from '@/lib/signupServics';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
-import { setCookie } from '../login/page';
 
 const SignUp: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -24,10 +23,10 @@ const SignUp: React.FC = () => {
 
     const result = await registerUser(email, password);
     if (result.success) {
-      router.push('/login');
+      router.push('/dashboard');
     } else {
       if (result.message === 'User already exists. Please log in.') {
-        setError('User already exists. Please log in.');
+        router.push('/');
       } else {
         setError(result.message || 'Registration failed.');
       }

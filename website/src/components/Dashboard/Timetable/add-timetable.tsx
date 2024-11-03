@@ -1,6 +1,9 @@
 "use client"
 import * as React from "react"
 import { useMediaQuery } from "@/hooks/use-media-query"
+import { collection, doc, getDoc,updateDoc, setDoc, addDoc, arrayUnion } from 'firebase/firestore';
+import { useAuthState } from "react-firebase-hooks/auth";
+import { db, auth } from "../../../firebaseConfig";
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -23,6 +26,11 @@ import {
 // import { Input } from "@/components/ui/input"
 // import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress";
+import { Label } from "recharts"
+import { Input, Typography } from "@mui/material"
+import { Grid } from "lucide-react"
+import { nanoid } from 'nanoid';
+import { XIcon } from "lucide-react"
 
 export default function AddTimetable() {
     const [open, setOpen] = React.useState(false)
@@ -47,7 +55,6 @@ export default function AddTimetable() {
             </Dialog>
         )
     }
-
     return (
         <Drawer open={open} onOpenChange={setOpen}>
             <DrawerTrigger asChild>
@@ -70,38 +77,99 @@ export default function AddTimetable() {
         </Drawer>
     )
 }
+    
 
 export function MultiStepForm({ totalSteps }: { totalSteps: number }) {
     const [currentStep, setCurrentStep] = React.useState(0);
-
+    const [submittedData, setSubmittedData] = React.useState<any>(null);
+    
+    const [courseName, setCourseName] = React.useState("")
+    const [classroom, setClassroom] = React.useState("")
+    const [startTime, setStartTime] = React.useState("")
+    const [endTime, setEndTime] = React.useState("")
+    const [daysOfWeek, setDaysOfWeek] = React.useState("")
+    
+    const [user] = useAuthState(auth); 
+    if (!user) {
+        console.error("User is not authenticated. Redirecting to login...");
+        return;
+    }
     const nextStep = () => {
-        if (currentStep < totalSteps) setCurrentStep(currentStep + 1);
+        if (currentStep < totalSteps ) {
+            setCurrentStep(currentStep + 1);
+        } 
+        else {
+            handleSubmit();  
+        }
     };
 
     const prevStep = () => {
         if (currentStep > 0) setCurrentStep(currentStep - 1);
     };
 
+    const handleSubmit = async() => {
+        
+        const timetableEntry = {
+            // userid: user.uid,
+            courseName,
+            classroom,
+            startTime,
+            endTime,
+            daysOfWeek
+        };
+        try {
+            const userDocRef = doc(db, "timetable", user.uid);
+            const userDoc = await getDoc(userDocRef);
+
+            if (userDoc.exists()) {
+                
+                await updateDoc(userDocRef, {
+                    timetableEntries: arrayUnion(timetableEntry),
+                });
+                console.log("Timetable entry added to existing user document.");
+            } else {
+                
+                await setDoc(userDocRef, {
+                    timetableEntries: [timetableEntry],
+                    userId: user.uid,
+                });
+                console.log("New user document created with timetable entry.");
+            }
+
+            setSubmittedData(timetableEntry);
+            resetForm();
+            alert("Timetable entry successfully submitted!");
+        } catch (error) {
+            console.error("Error writing document: ", error);
+            alert("There was an error submitting the timetable. Please try again.");
+        }
+    };
+
+    const resetForm = () => {
+        setCourseName("");
+        setClassroom("");
+        setStartTime("");
+        setEndTime("");
+        setDaysOfWeek("");
+        setCurrentStep(0);
+    };
+
     const renderForm = () => {
         switch (currentStep) {
             case 0:
-                return <FormStep  k={1}/>;
+                return <FormStep k={1} title="Course Name"  placeholder="Enter course name" value={courseName} onChange={(e) => setCourseName(e.target.value)}/>
             case 1:
-                return <FormStep  k={2}/>;
+                return <FormStep k={2} title="Classroom" placeholder="Enter classroom" value={classroom}  onChange={(e) => setClassroom(e.target.value)}/>
             case 2:
-                return <FormStep  k={3}/>;
+                return <FormStep k={3} title="Start Time" placeholder="Enter start time" type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)}/>
             case 3:
-                return <FormStep  k={4}/>;
+                return <FormStep k={4} title="End Time" placeholder="Enter end time" type="time"  value={endTime} onChange={(e) => setEndTime(e.target.value)}/>
             case 4:
-                return <FormStep  k={5}/>;
-            case 5:
-                return <FormStep  k={6}/>;
-            case 6:
-                return <FormStep k={7} />;
+                return <FormStep k={5} title="Days of the Week"  placeholder="Enter days (e.g., Mon, Wed)" value={daysOfWeek} onChange={(e) => setDaysOfWeek(e.target.value)} />
             default:
-                return <FormStep k={-1} />;
+                return <div>Review and Submit</div>
         }
-    };
+    }
 
     const progressBar = () => {
         const dots = [] as React.JSX.Element[]
@@ -114,8 +182,9 @@ export function MultiStepForm({ totalSteps }: { totalSteps: number }) {
         return dots;
     }
 
+  
     return (
-        <div className="container mx-auto">
+        <div className="container mx-auto px-4 md:px-0">
             <div className="h-1 w-full flex justify-between">
                 <div></div>
                 {progressBar()}
@@ -132,43 +201,75 @@ export function MultiStepForm({ totalSteps }: { totalSteps: number }) {
                     {currentStep === totalSteps ? "Submit" : "Next"}
                 </Button>
             </div>
+             
         </div>
     );
 }
 
-function FormStep({k} : {k:number}) {
+
+function FormStep({ k, title, placeholder, type = "text", value, onChange }: { k: number, title: string, placeholder: string, type?: string, value:string, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) {
     return (
         <div>
             <h2>Form Step {k}</h2>
-            {/* Add your form fields here */}
+            <Label>{title}</Label>
+            <Input type={type} placeholder={placeholder} value = {value} className="mt-2" onChange={onChange} />
+            
         </div>
-    );
+    )
 }
 
-// function FormStep1() {
-//     return (
-//         <div>
-//             <h2>Form Step 1</h2>
-//             {/* Add your form fields here */}
-//         </div>
-//     );
+
+
+// interface Timetable {
+//     semester: number,
+//     courses: { id: string, name: string }[],
 // }
 
-// function FormStep2() {
-//     return (
-//         <div>
-//             <h2>Form Step 2</h2>
-//             {/* Add your form fields here */}
-//         </div>
-//     );
-// }
+// function FormStep({ k }: { k: number }) {
+//     const [timetable, setTimetable] = React.useState<Timetable>({ semester: 1, courses: [] });
+//     const [courseInput, setCourseInput] = React.useState<string>();
 
-// function FormStep3() {
+//     function handleCourseInput() {
+//         const course = courseInput?.trim();
+//         if (course) {
+//             setTimetable(prev => ({
+//                 ...prev,
+//                 courses: [...prev.courses, { id: nanoid(5), name: course }],
+//             }))
+//             setCourseInput("");
+//         }
+//     }
 //     return (
-//         <div>
-//             <h2>Form Step 3</h2>
-//             {/* Add your form fields here */}
-//         </div>
+//         <form className="flex flex-col gap-4">
+//             <h2>Form Step {k}</h2>
+//             <Input placeholder="Semester" />
+//             <div className="flex gap-2">
+//                 <Input placeholder="Courses" onChange={(e) => { setCourseInput(e.target.value) }} value={courseInput} />
+//                 <Button type="button" onClick={() => { handleCourseInput() }}>+</Button>
+//             </div>
+//             {timetable.courses.length > 0 && <div className="flex flex-wrap gap-2">
+//                 {timetable.courses.map((course) => {
+//                     return (
+//                         <div
+//                             key={course.id}
+//                             className="bg-secondary rounded-full w-fit px-3 py-1 flex justify-center items-center"
+//                         >
+//                             {course.name}
+//                             <Button variant="secondary" className="p-0 h-4" type="button" 
+//                                 onClick={() => { 
+//                                     setTimetable(prev => ({ 
+//                                         ...prev, 
+//                                         courses: prev.courses.filter(c => c !== course) 
+//                                         })
+//                                     ); 
+//                                 }}>
+//                                 <XIcon className="h-4" />
+//                             </Button>
+//                         </div>
+//                     )
+//                 })}
+//             </div>}
+//         </form >
 //     );
 // }
 

@@ -1,20 +1,11 @@
 'use client';
 import React, { useState } from 'react';
 import { loginUser } from '@/lib/loginService';
+import { googleSignIn } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
-
-
-export function setCookie(name: string, value: string, days: number) {
-  let expires = "";
-  if (days) {
-      const date = new Date();
-      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-      expires = "; expires=" + date.toUTCString();
-  }
-  document.cookie = name + "=" + (value || "") + expires + "; path=/";
-}
+import { setUserCookie } from '@/lib/cookiesClient';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -31,17 +22,41 @@ const Login: React.FC = () => {
     }
 
     try {
-      const result = await loginUser(email, password);
-
-      if (result.success && result.token) {
-        await setCookie("authToken" , result.token , 7);
-        router.push('/dashboard');
+      const response = await loginUser(email, password);
+      if (response.success) {
+        if (response.token) {
+          setUserCookie(response.token, 7); // Store the token in a cookie for 7 days
+          router.push('/dashboard'); // Redirect to dashboard
+        } else {
+          setError('No token received.');
+        }
       } else {
-        setError(result.message || 'Login failed.');
+        setError(response.message || 'Login failed. Please try again.');
       }
     } catch (error) {
-      setError('An error occurred during login.');
-      return { success: false, message: error };
+      console.log(error);
+      setError('An unexpected error occurred. Please try again.');
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const response = await googleSignIn();
+      if (response.success) {
+        console.log("I AM IN!"); // Debugging log
+  
+        if (response.token) { // Check if token is defined
+          setUserCookie(response.token, 7); // Store the token in a cookie for 7 days
+          router.push('/dashboard'); // Redirect to dashboard
+        } else {
+          setError('No token received.'); // Handle the case where token is undefined
+        }
+      } else {
+        setError(response.message || 'Login failed. Please try again.'); // Ensure message is a string
+      }
+    } catch (error) {
+      console.log(error);
+      setError('An error occurred with Google login.');
     }
   };
 
@@ -82,6 +97,12 @@ const Login: React.FC = () => {
               Login
             </button>
           </form>
+          <button
+            onClick={handleGoogleLogin}
+            className="w-full mt-4 px-4 py-2 text-sm font-medium text-background bg-blue-500 rounded-lg hover:bg-blue-600 focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50"
+          >
+            Login with Google
+          </button>
           <p className="text-sm text-center">
             Don&apos;t have an account? <Link href="/sign-up" className="text-indigo-600 hover:text-indigo-500">Sign up</Link>
           </p>
