@@ -105,6 +105,7 @@ export function MultiStepForm({ totalSteps }: { totalSteps: number }) {
     };
 
     const handleSubmit = async () => {
+        console.log(user)
         const timetableEntry = {
             courseName,
             classroom,
