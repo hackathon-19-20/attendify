@@ -10,7 +10,7 @@ const drawerWidth = 240;
 const Sidebar: React.FC = () => {
   const { theme, resolvedTheme } = useTheme(); // Get the current theme
 
-  const isDarkMode = theme === 'dark' || resolvedTheme === 'dark'; // Check if dark mode is active
+  const isDarkMode = theme === 'dark' || resolvedTheme === 'dark';
 
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, href: '/dashboard' },
